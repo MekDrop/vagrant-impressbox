@@ -1,6 +1,12 @@
 # Box to use
 box: ImpressCMS/DevBox-Ubuntu
 
+# Plugins
+plugins:
+  - hostmanager
+  - cachier
+  - notify
+
 # What ip to bound?
 ip:
 

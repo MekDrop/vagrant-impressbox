@@ -25,7 +25,8 @@ module Impressbox
         #
         #@param vagrant_config  [Object]                            Current vagrant config
         #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
-        def configure(vagrant_config, config_file)
+        #@param ui              [Object]                            Vagrant ui
+        def configure(vagrant_config, config_file, ui)
           vagrant_config.vm.network 'private_network',
                                     ip: config_file.ip
         end

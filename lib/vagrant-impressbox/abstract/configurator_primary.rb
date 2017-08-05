@@ -6,7 +6,8 @@ module Impressbox
       #
       #@param vagrant_config  [Object]                            Current vagrant config
       #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
-      def configure(vagrant_config, config_file)
+      #@param ui              [Object]                            Vagrant ui
+      def configure(vagrant_config, config_file, ui)
         raise I18n.t('configuring.error.must_overwrite')
       end
 
@@ -25,6 +26,7 @@ module Impressbox
       def can_be_configured?(vagrant_config, file_config)
         true
       end
+
     end
   end
 end

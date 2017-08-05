@@ -15,7 +15,8 @@ module Impressbox
         #
         #@param vagrant_config  [Object]                            Current vagrant config
         #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
-        def configure(vagrant_config, config_file)
+        #@param ui              [Object]                            Vagrant ui
+        def configure(vagrant_config, config_file, ui)
           default_configure vagrant_config, config_file
 
           forward_ports vagrant_config, config_file.ports

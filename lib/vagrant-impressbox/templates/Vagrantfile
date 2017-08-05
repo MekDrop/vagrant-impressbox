@@ -12,22 +12,10 @@
 # -----------------------------------------------------------------------------
 
 # Installs required plugins if not installed
-if ARGV.include?('up')
-  needed_reboot = false
-  [
-    'vagrant-impressbox',
-    'vagrant-hostmanager'
-  ].each do |plugin|
-    unless Vagrant.has_plugin?(plugin)
-      system 'vagrant plugin install ' + plugin
-      needed_reboot = true
-    end
-  end
-  if needed_reboot
-    system 'vagrant up'
-    exit true
-  end
-  needed_reboot = nil
+if ARGV.include?('up') and not Vagrant.has_plugin?('vagrant-impressbox')
+  system 'vagrant plugin install vagrant-impressbox'
+  system 'vagrant up'
+  exit true
 end
 
 # Configure vagrant

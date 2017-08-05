@@ -98,6 +98,13 @@ module Impressbox
       #@return [String,Array]
       attr_reader :hostname
 
+      # Plugins
+      #
+      #@!attribute [rw] plugins
+      #
+      #@return [String,Array]
+      attr_reader :plugins
+
       # Initializer
       #
       #@param file [String] Config filename
@@ -226,6 +233,13 @@ module Impressbox
         @hostname = qg_str_array(value, 'hostname')
       end
 
+      # Sets 'plugins' variable
+      #
+      #@param value [Object]  Value to set to variable
+      def plugins=(value)
+        @plugins = qg_str_array(value, 'plugins')
+      end
+
       # Converts config data to Hash
       #
       #@return [Hash]
@@ -242,7 +256,8 @@ module Impressbox
           "gui" => @gui,
           "provision" => @provision,
           "name" => @name,
-          "hostname" => @hostname
+          "hostname" => @hostname,
+          "plugins" => @plugins
         }
       end
 

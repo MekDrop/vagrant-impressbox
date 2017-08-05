@@ -1,8 +1,8 @@
 module Impressbox
   module Configurators
-    module Primary
+    module Plugins
       # Configures hostnames (with HostManager plug-in)
-      class ConfigureHosts < Impressbox::Abstract::ConfiguratorPrimary
+      class Hostmanager < Impressbox::Abstract::ConfiguratorPlugin
 
         # Returns description
         #
@@ -22,6 +22,33 @@ module Impressbox
 
           vagrant_config.vm.hostname = hostname
           configure_hostmanager vagrant_config.hostmanager, aliases
+        end
+
+        # This method is used to configure/run configurator
+        #
+        #@param app         [Object]                            App instance
+        #@param env         [Hash]                              Current loaded environment data
+        #@param config_file [::Impressbox::Objects::ConfigFile] Loaded config file data
+        #@param machine     [::Vagrant::Machine]                Current machine
+        def halt(app, env, config_file, machine)
+          require 'vagrant-hostmanager/provisioner'
+
+          instance = VagrantPlugins::HostManager::HostsFile::Updater.new(env[:env], machine.provider_name)
+          instance.update_host
+        end
+
+        # This method is used to configure/run configurator
+        #
+        #@param app         [Object]                            App instance
+        #@param env         [Hash]                              Current loaded environment data
+        #@param config_file [::Impressbox::Objects::ConfigFile] Loaded config file data
+        #@param machine     [::Vagrant::Machine]                Current machine
+        def up(app, env, config_file, machine)
+          require 'vagrant-hostmanager/provisioner'
+
+          instance = VagrantPlugins::HostManager::HostsFile::Updater.new(machine.env, machine.provider_name)
+          instance.update_guest machine
+          instance.update_host
         end
 
         private

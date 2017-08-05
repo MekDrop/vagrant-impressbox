@@ -20,6 +20,17 @@ hostname:
 name: {{name}}
 
 # ---------------------------------------------------------------------------------------
+# This is place where is possible to add extra required vagrant plugins
+# Impressbox supports some plugins configurations automatically (see documentation).
+# all other plugins will be installed if they are not available on system on vagrant up
+# but no extra configuration will be available (so don't use any plugins here that needs
+# some extra configuartions and is not supported in impressbox)
+# ---------------------------------------------------------------------------------------
+plugins:
+{{#plugins}}    - {{.}}
+{{/plugins}}
+
+# ---------------------------------------------------------------------------------------
 # SSH Keys. If you use GitHub client, you can just simply change "id_rsa" to "github_rsa"
 # and everything should work without any extended configuration.
 #

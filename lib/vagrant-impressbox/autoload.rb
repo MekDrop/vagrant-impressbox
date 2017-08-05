@@ -32,6 +32,7 @@ module Impressbox
     autoload :Extension, BASE_PATH + 'extension.rb'
     autoload :CommandHandler, BASE_PATH + 'command_handler.rb'
     autoload :CommandSpecialArg, BASE_PATH + 'command_special_arg.rb'
+    autoload :ConfiguratorPlugin, BASE_PATH + 'configurator_plugin.rb'
   end
 
   # Now for actions
