@@ -14,5 +14,11 @@ module Impressbox
       end
     end
 
+    def self.config_validated
+      Vagrant::Action::Builder.new.tap do |builder|
+        builder.use ::Impressbox::Actions::ConfigValidated
+      end
+    end
+
   end
 end

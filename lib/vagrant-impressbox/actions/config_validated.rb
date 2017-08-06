@@ -1,6 +1,6 @@
 module Impressbox
   module Actions
-    class MachineUp
+    class ConfigValidated
 
       # Initializer
       #
@@ -55,14 +55,14 @@ module Impressbox
                   '..',
                   'configurators',
                   'action',
-                  'machine_up'
+                  'config_validated'
       end
 
       # Namespace used for all related Impressbox actions
       #
       #@return [String]
       def namespace
-        'Impressbox::Configurators::Action::MachineUp'
+        'Impressbox::Configurators::Action::ConfigValidated'
       end
 
     end

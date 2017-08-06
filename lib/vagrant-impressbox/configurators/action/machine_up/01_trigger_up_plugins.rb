@@ -3,7 +3,7 @@ module Impressbox
     module Action
       module MachineUp
         # Updates hosts
-        class Plugins < Impressbox::Abstract::ConfiguratorAction
+        class TriggerUpPlugins < Impressbox::Abstract::ConfiguratorAction
 
           # This method is used to configure/run configurator
           #
@@ -13,9 +13,9 @@ module Impressbox
           #@param machine     [::Vagrant::Machine]                Current machine
           def configure(app, env, config_file, machine)
             loader.each do |configurator|
-              next unless configurator.can_be_configured?
-              write_description env[:ui], configurator.description
-              configurator.up @app, env, config_file, env[:machine]
+              next unless configurator.can_be_configured?(config_file)
+              write_description env[:ui], configurator
+              configurator.up app, env, config_file, env[:machine]
             end
           end
 
@@ -27,6 +27,21 @@ module Impressbox
           end
 
           private
+
+          # Makes install plugin action info
+          #
+          #@param plugin_name [String]  Plugin name
+          #
+          #@return [Hash]
+          def plugin_install_action_info(plugin_name)
+            {
+              plugin_entry_point: nil,
+              plugin_version: nil,
+              plugin_sources: Vagrant::Bundler::DEFAULT_GEM_SOURCES.dup,
+              plugin_name: plugin_name,
+              plugin_verbose: false
+            }
+          end
 
           # Gets path for Impressbox actions for this Vagrant action
           #
@@ -57,11 +72,11 @@ module Impressbox
 
           # Writes plugin description
           #
-          #@param ui          [Object]  UI
-          #@param description [String]  Description
-          def write_description(ui, description)
-            return unless description
-            ui.info "\t" + description
+          #@param ui                  [Object]                                                  UI
+          #@param configurator        [::Impressbox::Impressbox::Abstract::ConfiguratorPlugin]  Configurator
+          def write_description(ui, configurator)
+            return unless configurator.description
+            ui.info "\t[" + configurator.vagrant_plugin_name + "] " + configurator.description
           end
 
         end

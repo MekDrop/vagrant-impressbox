@@ -4,7 +4,6 @@ ENV['TEST_VAGRANT_VERSION'] ||= 'v1.9.4'
 
 group :plugins do
   gem 'vagrant-impressbox', path: '.'
-  gem 'vagrant-hostmanager', '~> 1.8', '>= 1.8.1'
 end
 
 group :test do

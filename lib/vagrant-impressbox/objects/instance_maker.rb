@@ -26,7 +26,9 @@ module Impressbox
       #
       #@return [String]
       def self.render_class_name_from_file(namespace, file)
-        cnd = self.split_file_name(file).map do |s|
+        parts = self.split_file_name(file)
+        parts.delete_at(0) if self.is_numeric_part(parts[0])
+        cnd = parts.map do |s|
           s[0] = s[0, 1].upcase
           s
         end
@@ -55,6 +57,18 @@ module Impressbox
       def self.split_file_name(file)
         File.basename(file, '.rb').split('_')
       end
+
+      private
+
+      # is numeric part
+      #
+      #@param part [String] part
+      #
+      #@return [Boolean]
+      def self.is_numeric_part(part)
+        true if Float(part) rescue false
+      end
+
     end
   end
 end

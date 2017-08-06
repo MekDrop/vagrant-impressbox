@@ -41,5 +41,6 @@ module Impressbox
 
     autoload :MachineUp, BASE_PATH + 'machine_up.rb'
     autoload :MachineHalt, BASE_PATH + 'machine_halt.rb'
+    autoload :ConfigValidated, BASE_PATH + 'config_validated.rb'
   end
 end

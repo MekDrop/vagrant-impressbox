@@ -41,6 +41,10 @@ module Impressbox
       require_relative 'action'
       hook.after Vagrant::Action::Builtin::GracefulHalt, Action.machine_halt
     end
+    action_hook(:machine_action_config_validate) do |hook|
+      require_relative 'action'
+      hook.after Vagrant::Action::Builtin::ConfigValidate, Action.config_validated
+    end
 
   end
 end

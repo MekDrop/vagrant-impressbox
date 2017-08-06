@@ -18,7 +18,7 @@ module Impressbox
         #@param ui              [Object]                            Vagrant ui
         def configure(vagrant_config, config_file, ui)
           loader.each do |configurator|
-            next unless configurator.can_be_configured?
+            next unless configurator.can_be_configured?(config_file)
             ui.info "\t[" + configurator.vagrant_plugin_name + "] " + configurator.description
             configurator.configure vagrant_config, config_file
           end

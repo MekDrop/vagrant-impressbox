@@ -12,8 +12,8 @@ module Impressbox
           #@param machine     [::Vagrant::Machine]                Current machine
           def configure(app, env, config_file, machine)
             loader.each do |configurator|
-              next unless configurator.can_be_configured?
-              write_description env[:ui], configurator.description
+              next unless configurator.can_be_configured?(config_file)
+              write_description env[:ui], configurator
               configurator.halt @app, env, config_file, env[:machine]
             end
           end
@@ -39,11 +39,11 @@ module Impressbox
 
           # Writes plugin description
           #
-          #@param ui          [Object]  UI
-          #@param description [String]  Description
-          def write_description(ui, description)
-            return unless description
-            ui.info "\t" + description
+          #@param ui                  [Object]                                                  UI
+          #@param configurator        [::Impressbox::Impressbox::Abstract::ConfiguratorPlugin]  Configurator
+          def write_description(ui, configurator)
+            return unless configurator.description
+            ui.info "\t[" + configurator.vagrant_plugin_name + "] " + configurator.description
           end
 
           # Gets path for Impressbox actions for this Vagrant action

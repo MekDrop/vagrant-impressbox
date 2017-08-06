@@ -21,14 +21,24 @@ module Impressbox
       #
       #@return [String]
       def vagrant_plugin_name
-        'vagrant-' + self.class.name.to_s.split('::').last.downcase
+        'vagrant-' + short_name
+      end
+
+      # Gets short class name
+      #
+      #@return [String]
+      def short_name
+        self.class.name.to_s.split('::').last.downcase
       end
 
       # Can be executed ?
       #
+      #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
+      #
       #@return            [Boolean]
-      def can_be_configured?
-        Vagrant.has_plugin? vagrant_plugin_name
+      def can_be_configured?(config_file)
+        return false unless Vagrant.has_plugin?(vagrant_plugin_name)
+        config_file.plugins.include? short_name
       end
 
       # This method is used to configure/run configurator on halt
