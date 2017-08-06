@@ -37,8 +37,7 @@ module Impressbox
       #
       #@return            [Boolean]
       def can_be_configured?(config_file)
-        return false unless Vagrant.has_plugin?(vagrant_plugin_name)
-        config_file.plugins.include? short_name
+        Vagrant.has_plugin?(vagrant_plugin_name) or config_file.plugins.include?(short_name)
       end
 
       # This method is used to configure/run configurator on halt
