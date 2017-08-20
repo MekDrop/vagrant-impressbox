@@ -19,18 +19,7 @@ module Impressbox
 
     # Finalize config
     def finalize!
-      @file = 'config.yaml' if @file == UNSET_VALUE
-    end
-
-    # Gets ConfigFile instance from set file attribute
-    #
-    #@return [::Impressbox::Objects::ConfigFile]
-    def file_config
-      unless @file_config_data
-        require_relative File.join('objects', 'config_file')
-        @file_config_data = Impressbox::Objects::ConfigFile.new(@file)
-      end
-      @file_config_data
+      @file = 'config.impressbox.yaml' if @file == UNSET_VALUE
     end
 
     # Validate config values

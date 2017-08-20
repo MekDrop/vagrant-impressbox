@@ -9,7 +9,8 @@ module Impressbox
     # Provision shortcut
     Provision = Vagrant::Action::Builtin::Provision
 
-    #
+    # Mass Loader shortcut
+    DirInfo = Impressbox::Objects::DirInfo
 
     # Defines plug-in name
     name 'vagrant-impressbox'
@@ -27,24 +28,29 @@ module Impressbox
       Impressbox::Provisioner
     end
 
-    # Defines command
-    command 'impressbox' do
-      Impressbox::Command
+    # Automaticaly defines commands
+    DirInfo.create_from_relative_path('commands', true).each do |file|
+      command file.class_name.downcase do
+        require file.filename
+        file.const_class_name
+      end
     end
 
-    # Defines action hooks
-    action_hook(:machine_action_up) do |hook|
-      require_relative 'action'
-      hook.after Vagrant::Action::Builtin::Provision, Action.machine_up
-    end
-    action_hook(:machine_action_destroy) do |hook|
-      require_relative 'action'
-      hook.after Vagrant::Action::Builtin::GracefulHalt, Action.machine_halt
-    end
-    action_hook(:machine_action_config_validate) do |hook|
-      require_relative 'action'
-      hook.after Vagrant::Action::Builtin::ConfigValidate, Action.config_validated
-    end
+    # Automaticaly defines hooks
+    # DirInfo.create_from_relative_path('middlewares').each do |file|
+    #   next unless file.ruby_file?
+    #   require file.filename
+    #   middleware_build = file.const_class_name.build
+    #   file.const_class_name.hooks.each do |hook|
+    #     action_hook(hook[1]) do |real_hook|
+    #       if hook.length == 2 then
+    #         real_hook.method(hook[0]).call middleware_build
+    #       elsif hook.length == 3 then
+    #         real_hook.method(hook[0]).call hook[1], middleware_build
+    #       end
+    #     end
+    #   end
+    # end
 
   end
 end

@@ -6,93 +6,52 @@ module Impressbox
   # provision tasks are now defined in actions
   class Provisioner < Vagrant.plugin('2', :provisioner)
 
-    # Stores loaded ConfigFile instance
-    #
-    #@return [::Impressbox::Objects::ConfigFile,nil]
-    @@__loaded_config = nil
+    # Mass Loader shortcut
+    DirInfo = ::Impressbox::Objects::DirInfo
 
-    # Object with loaded config from file
+    # Config File shortcut
+    ConfigFile = ::Impressbox::Objects::ConfigFile
+
+    # Initializes the provisioner with the machine that it will be
+    # provisioning along with the provisioner configuration (if there
+    # is any).
     #
-    #@return [::Impressbox::Objects::ConfigFile,nil]
-    def self.loaded_config
-      @@__loaded_config
+    # The provisioner should _not_ do anything at this point except
+    # initialize internal state.
+    #
+    # @param [Machine] machine The machine that this will be provisioning.
+    # @param [Object] config Provisioner configuration, if one was set.
+    def initialize(machine, config)
+      @file_config = ConfigFile.new(config.file)
+      @configurators = DirInfo.create_from_relative_path('configurators', true)
+      @configurators.each do |configurator|
+        configurator.instance machine, @file_config
+      end
+      super machine, config
     end
 
     # Cleanup operations
     def cleanup
+      @configurators.each do |configurator|
+        configurator.last_instance.cleanup
+      end
     end
 
     # Do configuration operations
     #
-    #@param root_config [Object]  Current Vagrantfile configuration instance
+    #@param root_config [Hash]  Current Vagrantfile configuration instance
     def configure(root_config)
-      @@__loaded_config = xaml_config
-      run_primary_configuration root_config
+      @configurators.each do |configurator|
+        configurator.last_instance.configure root_config
+      end
     end
 
     # Do provision tasks
     def provision
-      mass_loader('provision').each do |configurator|
-        next unless configurator.can_be_configured?(@machine, @@__loaded_config)
-        @machine.ui.info configurator.description if configurator.description
-        configurator.configure @machine, @@__loaded_config
+      @configurators.each do |configurator|
+        configurator.last_instance.provision
       end
     end
 
-    private
-
-    # Runs primary configuration
-    #
-    #@param root_config [Object] Root Vagrant config
-    def run_primary_configuration(root_config)
-      old_root = root_config.dup
-      old_loaded = @@__loaded_config.dup
-      mass_loader('primary').each do |configurator|
-        next unless configurator.can_be_configured?(old_root, old_loaded)
-        @machine.ui.info configurator.description if configurator.description
-        configurator.configure root_config, old_loaded, @machine.ui
-      end
-    end
-
-    # Gets preconfigured MassFileLoader instance
-    #
-    #@param type [String] Files type
-    #
-    #@return [::Impressbox::Objects::MassFileLoader]
-    def mass_loader(type)
-      namespace = 'Impressbox::Configurators::' + ucfirst(type)
-      path = File.join('..', 'configurators', type)
-      Impressbox::Objects::MassFileLoader.new namespace, path
-    end
-
-    # Makes first latter of tsuplied world in uppercase
-    #
-    #@param str [String]  String to do what needed to do
-    #
-    #@return [String]
-    def ucfirst(str)
-      str[0] = str[0, 1].upcase
-      str
-    end
-
-    # Loads xaml config
-    #
-    #@return [::Impressbox::Objects::ConfigFile]
-    def xaml_config
-      require_relative File.join('objects', 'config_file')
-      file = detect_file(config.file)
-      @machine.ui.info "\t" + I18n.t('config.loaded_from_file', file: file)
-      Impressbox::Objects::ConfigFile.new file
-    end
-
-    # Try to detect config.yaml file
-    #
-    #@param file [String]  Tries file and if not returns default file
-    #
-    #@return [String]
-    def detect_file(file)
-      return file if File.exist?(file)
-      'config.yaml'
-    end
   end
 end

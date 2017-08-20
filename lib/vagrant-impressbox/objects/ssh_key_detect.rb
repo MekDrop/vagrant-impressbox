@@ -26,25 +26,11 @@ module Impressbox
       #@param config [::Impressbox::Objects::ConfigFile] Loaded config file data
       def initialize(config)
         keys_from_config config.keys
-        unless validate
-          detect_ssh_keys_from_config
-          unless validate
-            detect_from_filesystem
-            validate
-          end
-        end
-      end
-
-      # Sets keys from config
-      #
-      #@param keys [Hash] Keys data
-      def keys_from_config(keys)
-        if !keys[:private].nil? && (keys[:private] != UNSET_VALUE)
-          @private_key = keys[:private]
-        end
-        if !keys[:public].nil? && (keys[:public] != UNSET_VALUE)
-          @public_key = keys[:public]
-        end
+        return if validate
+        detect_ssh_keys_from_config
+        return if validate
+        detect_from_filesystem
+        validate
       end
 
       # Are both keys variables empty?
@@ -94,6 +80,35 @@ module Impressbox
         end
       end
 
+      # Gets paths for looking for SSH keys
+      #
+      #@return [Array]
+      def ssh_keys_search_paths
+        [
+          File.join(__dir__, '.ssh'),
+          File.join(__dir__, 'ssh'),
+          File.join(__dir__, 'keys'),
+          File.join(Dir.home, '.ssh'),
+          File.join(Dir.home, 'keys')
+        ].reject do |dir|
+          !Dir.exist?(dir)
+        end
+      end
+
+      private
+
+      # Sets keys from config
+      #
+      #@param keys [Hash] Keys data
+      def keys_from_config(keys)
+        if !keys[:private].nil? && (keys[:private] != UNSET_VALUE)
+          @private_key = keys[:private]
+        end
+        if !keys[:public].nil? && (keys[:public] != UNSET_VALUE)
+          @public_key = keys[:public]
+        end
+      end
+
       # Used in detect_ssh_keys_from_filesystem
       #
       #@param dir [String] Dir where to search SSH keys files
@@ -137,20 +152,7 @@ module Impressbox
           File.exist?(private_filename_from_public(filename))
       end
 
-      # Gets paths for looking for SSH keys
-      #
-      #@return [Array]
-      def ssh_keys_search_paths
-        [
-          File.join(__dir__, '.ssh'),
-          File.join(__dir__, 'ssh'),
-          File.join(__dir__, 'keys'),
-          File.join(Dir.home, '.ssh'),
-          File.join(Dir.home, 'keys')
-        ].reject do |dir|
-          !Dir.exist?(dir)
-        end
-      end
     end
+
   end
 end
