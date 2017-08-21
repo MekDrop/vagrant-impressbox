@@ -7,6 +7,9 @@ module Impressbox
       # Install gem shortcut
       InstallGem = VagrantPlugins::CommandPlugin::Action::InstallGem
 
+      # Global variable to see if it was checked
+      @@checked = false
+
       # Initialize middleware
       #
       #@param machine [Vagrant::Machine]        Current machine
@@ -14,7 +17,10 @@ module Impressbox
       def initialize(machine, config)
         super machine, config
 
-        check_plugins if check_plugins?
+        if check_plugins?
+          check_plugins
+          @@checked = true
+        end
       end
 
       private
@@ -23,7 +29,7 @@ module Impressbox
       #
       #@return [Boolean]
       def check_plugins?
-        ARGV.include?('up') || ARGV.include?('provision')
+        !@@checked && (ARGV.include?('up') || ARGV.include?('provision'))
       end
 
       # Checks if plugins where installed
