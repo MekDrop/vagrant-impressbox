@@ -39,7 +39,7 @@ module Impressbox
 
     # Do configuration operations
     #
-    #@param root_config [Hash]  Current Vagrantfile configuration instance
+    # @param root_config [Hash]  Current Vagrantfile configuration instance
     def configure(root_config)
       @configurators.each do |configurator|
         configurator.last_instance.configure root_config

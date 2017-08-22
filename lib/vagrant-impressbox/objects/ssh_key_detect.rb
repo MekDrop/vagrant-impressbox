@@ -9,21 +9,21 @@ module Impressbox
 
       # Private key
       #
-      #@!attribute [rw] private_key
+      # @!attribute [rw] private_key
       #
-      #@return [String,nil]
+      # @return [String,nil]
       attr_accessor :private_key
 
       # Public key
       #
-      #@!attribute [rw] public_key
+      # @!attribute [rw] public_key
       #
-      #@return [String,nil]
+      # @return [String,nil]
       attr_accessor :public_key
 
       # Initializer
       #
-      #@param config [::Impressbox::Objects::ConfigFile] Loaded config file data
+      # @param config [::Impressbox::Objects::ConfigFile] Loaded config file data
       def initialize(config)
         keys_from_config config.keys
         return if validate
@@ -35,28 +35,28 @@ module Impressbox
 
       # Are both keys variables empty?
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def empty?
         @private_key.nil? && @public_key.nil?
       end
 
       # Was private key variable set ?
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def private_key?
         !@private_key.nil?
       end
 
       # Was public key variable set ?
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def public_key?
         !@public_key.nil?
       end
 
       # Checks if both keys were set and files exists
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def validate
         return false unless private_key?
         return false unless public_key?
@@ -82,7 +82,7 @@ module Impressbox
 
       # Gets paths for looking for SSH keys
       #
-      #@return [Array]
+      # @return [Array]
       def ssh_keys_search_paths
         [
           File.join(__dir__, '.ssh'),
@@ -99,7 +99,7 @@ module Impressbox
 
       # Sets keys from config
       #
-      #@param keys [Hash] Keys data
+      # @param keys [Hash] Keys data
       def keys_from_config(keys)
         if !keys[:private].nil? && (keys[:private] != UNSET_VALUE)
           @private_key = keys[:private]
@@ -111,9 +111,9 @@ module Impressbox
 
       # Used in detect_ssh_keys_from_filesystem
       #
-      #@param dir [String] Dir where to search SSH keys files
+      # @param dir [String] Dir where to search SSH keys files
       #
-      #@return [String]
+      # @return [String]
       def iterate_dir_fs(dir)
         Dir.entries(dir).each do |entry|
           entry = File.join(dir, entry)
@@ -126,9 +126,9 @@ module Impressbox
 
       # Converts private SSH key to public
       #
-      #@param filename [String] Public SSH key filename
+      # @param filename [String] Public SSH key filename
       #
-      #@return [String]
+      # @return [String]
       def private_filename_from_public(filename)
         File.join(
           File.dirname(
@@ -143,9 +143,9 @@ module Impressbox
 
       # Is a correct file in filesystem tobe a SSH key?
       #
-      #@param filename [String] Filename to test
+      # @param filename [String] Filename to test
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def good_file_on_filesystem?(filename)
         File.file?(filename) && \
           File.extname(filename).eql?('.pub') && \

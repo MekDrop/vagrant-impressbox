@@ -6,14 +6,14 @@ module Impressbox
 
       # Call method of middleware
       #
-      #@param env [Hash]  Current hash used for invoking this middleware
+      # @param env [Hash]  Current hash used for invoking this middleware
       def call(env)
         method(env[:action_name]).call env
       end
 
       # Get hook when to add
       #
-      #@return [Array]
+      # @return [Array]
       def self.hooks
         [
           [:append, :machine_up],
@@ -23,7 +23,7 @@ module Impressbox
 
       # Action executed when configuring
       #
-      #@param env [Hash] Enviroment
+      # @param env [Hash] Enviroment
       def impressbox_configure(env)
         require 'vagrant-hostmanager'
 
@@ -35,7 +35,7 @@ module Impressbox
 
       # Action executed when machine up
       #
-      #@param env [Hash] Enviroment
+      # @param env [Hash] Enviroment
       def machine_up(env)
         require 'vagrant-hostmanager/provisioner'
 
@@ -46,7 +46,7 @@ module Impressbox
 
       # Action executed when machine halting
       #
-      #@param env [Hash] Enviroment
+      # @param env [Hash] Enviroment
       def machine_halt(env)
         require 'vagrant-hostmanager/provisioner'
 
@@ -56,9 +56,9 @@ module Impressbox
 
       # Can be configured?
       #
-      #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
+      # @param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def self.can_be_configured?(config_file)
         Vagrant.has_plugin? 'vagrant-hostmanager'
       end
@@ -67,8 +67,8 @@ module Impressbox
 
       # Does HostManager configuration
       #
-      #@param hostmanager [Object] Part of current vagrant config for configuring HostManager
-      #@param aliases     [Array]  Aliases for hostname
+      # @param hostmanager [Object] Part of current vagrant config for configuring HostManager
+      # @param aliases     [Array]  Aliases for hostname
       def configure_hostmanager(hostmanager, aliases)
         hostmanager.enabled = true
         hostmanager.manage_host = true
@@ -80,9 +80,9 @@ module Impressbox
 
       # Extracts hostname and aliases array from loaded config file
       #
-      #@param cfg [::Impressbox::Objects::ConfigFile] Loaded config file data
+      # @param cfg [::Impressbox::Objects::ConfigFile] Loaded config file data
       #
-      #@return [Array]
+      # @return [Array]
       def extract_data(cfg)
         aliases = cfg.hostname.dup
         if aliases.is_a?(Array)

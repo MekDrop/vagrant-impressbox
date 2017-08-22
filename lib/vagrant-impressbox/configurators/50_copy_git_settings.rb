@@ -16,14 +16,14 @@ module Impressbox
 
       # Git exists?
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def git_exist?
         system('git -v').nil?
       end
 
       # Returns host GIT config
       #
-      #@return [Hash]
+      # @return [Hash]
       def local_cfg
         ret = {}
         output = `git config --list --global`
@@ -37,7 +37,7 @@ module Impressbox
 
       # Sets GIT settings on guest machine
       #
-      #@param cfg     [Hash]                Git settings
+      # @param cfg     [Hash]                Git settings
       def update_remote_cfg(cfg)
         @machine.communicate.wait_for_ready 300
 

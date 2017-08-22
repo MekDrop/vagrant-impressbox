@@ -6,7 +6,7 @@ module Impressbox
 
       # Do configuration operations
       #
-      #@param vagrant_config [Hash]  Current Vagrantfile configuration instance
+      # @param vagrant_config [Hash]  Current Vagrantfile configuration instance
       def configure(vagrant_config)
         if can_be_configured?
           map_sync_folder vagrant_config
@@ -20,14 +20,14 @@ module Impressbox
 
       # Is this provider needs samba?
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def provider_needs_samba?
         @machine.provider_name.to_s == 'hyperv'
       end
 
       # Can be configured?
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def can_be_configured?
         !@config.smb.empty? &&
           @config.smb.key?('ip') &&
@@ -43,7 +43,7 @@ module Impressbox
 
       # Maps sync folder
       #
-      #@param vagrant_config [Hash]  Current Vagrantfile configuration instance
+      # @param vagrant_config [Hash]  Current Vagrantfile configuration instance
       def map_sync_folder(vagrant_config)
         @machine.ui.info I18n.t('configuring.samba')
         puts @config.smb.inspect

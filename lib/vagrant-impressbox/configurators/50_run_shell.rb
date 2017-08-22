@@ -22,7 +22,7 @@ module Impressbox
 
       # Can be executed ?
       #
-      #@return            [Boolean]
+      # @return            [Boolean]
       def can_be_configured?
         p = @config.provision
         p.is_a?(String) && p.strip.length > 0
@@ -32,9 +32,9 @@ module Impressbox
 
       # Makes temp file from commands and return filename
       #
-      #@param commands [String] Commmands to save
+      # @param commands [String] Commmands to save
       #
-      #@return [String]
+      # @return [String]
       def make_tmp_file(commands)
         require 'tempfile'
         file = Tempfile.new('impressbox-run_shell', {
@@ -53,7 +53,7 @@ module Impressbox
 
       # Execute command on machine
       #
-      #@param cmd      [String]
+      # @param cmd      [String]
       def exec_on_machine(cmd)
         @machine.communicate.execute(cmd) do |type, data|
           write_output type, data
@@ -62,9 +62,9 @@ module Impressbox
 
       # Gets line color by output type
       #
-      #@param type [Symbol] Result type
+      # @param type [Symbol] Result type
       #
-      #@return [Symbol]
+      # @return [Symbol]
       def line_color(type)
         return :green if type == :stdout
         :red
@@ -72,8 +72,8 @@ module Impressbox
 
       # Writes output to console
       #
-      #@param type     [Symbol]               Output type
-      #@param data     [String]               Output data
+      # @param type     [Symbol]               Output type
+      # @param data     [String]               Output data
       def write_output(type, data)
         data = data.chomp
         return unless data.length > 0

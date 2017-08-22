@@ -6,7 +6,7 @@ module Impressbox
 
       # Do configuration operations
       #
-      #@param vagrant_config [Hash]  Current Vagrantfile configuration instance
+      # @param vagrant_config [Hash]  Current Vagrantfile configuration instance
       def configure(vagrant_config)
         if Vagrant.has_plugin?('vagrant-fsnotify')
           configure_fsnotify vagrant_config
@@ -19,14 +19,14 @@ module Impressbox
 
       # Configure vagrant-fsnotify plugin
       #
-      #@param vagrant_config [Hash]  Current Vagrantfile configuration instance
+      # @param vagrant_config [Hash]  Current Vagrantfile configuration instance
       def configure_fsnotify(vagrant_config)
         vagrant_config.vm.synced_folder ".", "/vagrant", fsnotify: true
       end
 
       # Configure vagrant-notify-forwarder plugin
       #
-      #@param vagrant_config [Hash]  Current Vagrantfile configuration instance
+      # @param vagrant_config [Hash]  Current Vagrantfile configuration instance
       def configure_notify_forwarder(vagrant_config)
         vagrant_config.notify_forwarder.port = 29324
         vagrant_config.notify_forwarder.run_as_root = false

@@ -7,30 +7,30 @@ module Impressbox
 
       # Templates dir constant
       #
-      #@return [String]
+      # @return [String]
       TEMPLATES_DIR = File.join(File.dirname(__dir__), 'templates').freeze
 
       # Alternative extensions
       #
-      #@return [Hash]
+      # @return [Hash]
       ALT_EXTENSIONS = {
         :yml => 'yaml'
       }.freeze
 
       # Gets real path for filename
       #
-      #@param filename [String] Filename
+      # @param filename [String] Filename
       #
-      #@return [String]
+      # @return [String]
       def real_path(filename)
         File.join TEMPLATES_DIR, filename
       end
 
       # Extract options from files
       #
-      #@param files [Array] Files where to search for options
+      # @param files [Array] Files where to search for options
       #
-      #@return [Hash]
+      # @return [Hash]
       def read_options(files)
         ret = {}
         files.each do |file|
@@ -43,10 +43,10 @@ module Impressbox
 
       # Makes options hash
       #
-      #@param options [Hash]   Key values data
-      #@param files   [Array]  Data files to be used for parsing
+      # @param options [Hash]   Key values data
+      # @param files   [Array]  Data files to be used for parsing
       #
-      #@return [Hash]
+      # @return [Hash]
       def make_options(options, files = [])
         merge_hashes(
           if files.empty?
@@ -60,11 +60,11 @@ module Impressbox
 
       # Renders filename and saves
       #
-      #@param tpl_file          [String]  Template filename
-      #@param dst_file          [String]  Where to save rendered result
-      #@param options           [Hash]    Key values data
-      #@param data_files        [Array]   Data files to be used for parsing
-      #@param options_processor [Method]  Options processor method *used when modifing params at end)
+      # @param tpl_file          [String]  Template filename
+      # @param dst_file          [String]  Where to save rendered result
+      # @param options           [Hash]    Key values data
+      # @param data_files        [Array]   Data files to be used for parsing
+      # @param options_processor [Method]  Options processor method *used when modifing params at end)
       def make_file(tpl_file, dst_file, options, data_files = [], options_processor = nil)
         all_options = make_options(options, data_files)
         options_processor.call(all_options) unless options_processor.nil?
@@ -74,20 +74,20 @@ module Impressbox
 
       # Renders filename to string
       #
-      #@param src_file [String] Template filename
-      #@param options  [Hash]   Key values data
+      # @param src_file [String] Template filename
+      # @param options  [Hash]   Key values data
       #
-      #@return [String]
+      # @return [String]
       def render_file(src_file, options)
         render_string File.read(src_file), options
       end
 
       # Renders string template to string
       #
-      #@param text     [String] Template string
-      #@param options  [Hash]   Key values data
+      # @param text     [String] Template string
+      # @param options  [Hash]   Key values data
       #
-      #@return [String]
+      # @return [String]
       def render_string(text, options = {})
         o = {}
         options.each do |key, value|
@@ -110,10 +110,10 @@ module Impressbox
 
       # Merge two hashes
       #
-      #@param a [Hash] Hash 1
-      #@param b [Hash] Hash 2
+      # @param a [Hash] Hash 1
+      # @param b [Hash] Hash 2
       #
-      #@return [Hash]
+      # @return [Hash]
       def merge_hashes(a, b)
         ret = a.dup
         b.each do |key, value|
@@ -129,9 +129,9 @@ module Impressbox
 
       # Reads file to Hash
       #
-      #@param filename [String] File to read
+      # @param filename [String] File to read
       #
-      #@return [nil,Hash]
+      # @return [nil,Hash]
       def read_file(filename)
         ext = real_extension(filename)
         method_name = 'read_' + ext
@@ -144,9 +144,9 @@ module Impressbox
 
       # Gets normal extension from filename
       #
-      #@param filename [String] Filename from wehere to get read goo extension
+      # @param filename [String] Filename from wehere to get read goo extension
       #
-      #@return [String]
+      # @return [String]
       def real_extension(filename)
         ext = File.extname(filename)
         return ext if ext.empty?
@@ -158,9 +158,9 @@ module Impressbox
 
       # Read .yaml extension
       #
-      #@param filename [String]  Data source filename
+      # @param filename [String]  Data source filename
       #
-      #@return [Hash]
+      # @return [Hash]
       def read_yaml(filename)
         require 'yaml'
         YAML.load File.open(filename)

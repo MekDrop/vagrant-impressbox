@@ -27,6 +27,7 @@ en:
     template:
       error:
         imput_empty: Required input was empty. Can't continue (it's possible that you will need to redo current box, if it will not work as expected)
+        bad_value_specified: "Bad type value specified for field %{var}:\n\tFile: %{file}\n\tValue: %{value}\n\tType: %{type}"
     ssh_key:
         updating:
             public: Updating public key...
@@ -49,12 +50,11 @@ en:
             error:
               cant_detect_repo_type: "Can't detect repo type from provided url"
             arguments:
-                box: "Box name for new box (default: %{box})"
-                ip: "Defines IP (default: %{ip})"
-                hostname: "Hostname associated with this box (default: %{hostname})"
-                memory:  "How much RAM (in megabytes)? (default: %{memory})"
-                cpus: "How much CPU? (default: %{cpus})"
-                cmd: "What command would be executed when use vagrant exec on host? (default: %{cmd})"
+                box: "Box name for new box (default: %{default_value})"
+                ip: "Defines IP (default: %{default_value})"
+                hostname: "Hostname associated with this box (default: %{default_value})"
+                memory:  "How much RAM (in megabytes)? (default: %{default_value})"
+                cpus: "How much CPU? (default: %{default_value})"
                 special:
                     recreate: "Recreates config instead of updating (so you don't need to delete first)"
                     use_template: "This argument says that predefined config will be used when creating box. Possible names: %{templates}"

@@ -9,8 +9,8 @@ module Impressbox
 
       # Initialize middleware
       #
-      #@param machine [Vagrant::Machine]        Current machine
-      #@param config [Impressbox::ConfigFile]   Loaded config
+      # @param machine [Vagrant::Machine]        Current machine
+      # @param config [Impressbox::ConfigFile]   Loaded config
       def initialize(machine, config)
         @keys = SshKeyDetect.new config
 
@@ -19,7 +19,7 @@ module Impressbox
 
       # Do configuration operations
       #
-      #@param vagrant_config [Hash]  Current Vagrantfile configuration instance
+      # @param vagrant_config [Hash]  Current Vagrantfile configuration instance
       def configure(vagrant_config)
         vagrant_config.ssh.private_key_path = [@keys.private_key] if @keys.private_key?
       end
@@ -45,7 +45,7 @@ module Impressbox
 
       # Updates public key
       #
-      #@param private_key   [String]                               Private key filename on host
+      # @param private_key   [String]                               Private key filename on host
       def machine_private_key
         ui.info I18n.t('ssh_key.updating.private')
         if machine_upload_file @keys.private_key, '~/.ssh/id_rsa'
@@ -55,8 +55,8 @@ module Impressbox
 
       # Upload file to guest machine from host machine
       #
-      #@param src_file      [String]                               Source file to upload
-      #@param dst_file      [String]                               Destination filename to save
+      # @param src_file      [String]                               Source file to upload
+      # @param dst_file      [String]                               Destination filename to save
       def machine_upload_file(src_file, dst_file)
         prepare_guest_file dst_file
         write_lines_to_remote_file read_file_good(src_file), dst_file
@@ -65,8 +65,8 @@ module Impressbox
 
       # Writes lines to remote file
       #
-      #@param lines        [Array]                                Lines to write
-      #@param file         [String]                               File where to write
+      # @param lines        [Array]                                Lines to write
+      # @param file         [String]                               File where to write
       def write_lines_to_remote_file(lines, file)
         lines.each_line do |line|
           @machine.communicate.execute "echo \"#{line.rstrip}\" >> #{file}"
@@ -75,9 +75,9 @@ module Impressbox
 
       # Reads specific file and replace all OS specific line-endings to Linux line-endings
       #
-      #@param file  [String]  File to read
+      # @param file  [String]  File to read
       #
-      #@return [String]
+      # @return [String]
       def read_file_good(file)
         text = File.open(file).read
         text.gsub!(/\r\n?/, "\n")
@@ -86,7 +86,7 @@ module Impressbox
 
       # Execute some needed commands on specific file on guest machine
       #
-      #@param file         [String]                               Filename to use in all operations in this method
+      # @param file         [String]                               Filename to use in all operations in this method
       def prepare_guest_file(file)
         communicator.execute 'chmod 777 ' + file + ' || :'
         communicator.execute 'touch ' + file

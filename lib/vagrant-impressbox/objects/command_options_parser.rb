@@ -11,18 +11,18 @@ module Impressbox
 
       # Default values
       #
-      #@return [Hash]
+      # @return [Hash]
       attr_reader :default_values
 
       # Linked command
       #
-      #@return [Method]
+      # @return [Method]
       attr_reader :parse_options_method
 
       # Initializer
       #
-      #@param banner [String] Banner
-      #@param parent [Method] Used parse options method
+      # @param banner [String] Banner
+      # @param parent [Method] Used parse options method
       def initialize(banner, parse_options_method)
         @options = {}
         @default_values = read_default_values
@@ -42,16 +42,16 @@ module Impressbox
 
       # Gets all data
       #
-      #@return [Hash]
+      # @return [Hash]
       def all
         @options
       end
 
       # Gets item from config data
       #
-      #@param key [String] Key to get item by it's name
+      # @param key [String] Key to get item by it's name
       #
-      #@return [Object]
+      # @return [Object]
       def [](key)
         @options[if key.is_a?(Symbol)
                    key
@@ -69,11 +69,11 @@ module Impressbox
 
       # Adds action for option
       #
-      #@param o       [Object]      Option
-      #@param short   [String,nil]  Short option variant
-      #@param full    [String,nil]  Long option variant
-      #@param desc    [String,nil]  Description
-      #@param option  [String,nil]  Option name for options array
+      # @param o       [Object]      Option
+      # @param short   [String,nil]  Short option variant
+      # @param full    [String,nil]  Long option variant
+      # @param desc    [String,nil]  Description
+      # @param option  [String,nil]  Option name for options array
       def add_action_on(o, short, full, desc, option)
         if short
           o.on(short, full, desc) do |f|
@@ -88,7 +88,7 @@ module Impressbox
 
       # Get all options from supplied yaml with this plugin
       #
-      #@return [Hash]
+      # @return [Hash]
       def options_cfg
         impressbox_path = File.join('commands', 'impressbox.yml')
         ConfigData.new(impressbox_path).all
@@ -96,7 +96,7 @@ module Impressbox
 
       # Binds options to options array
       #
-      #@param o [Object]  Option
+      # @param o [Object]  Option
       def bind_options(o)
         options_cfg.each do |option, data|
           short, full, desc = option_data_parse(data, option)
@@ -106,9 +106,9 @@ module Impressbox
 
       # Creates option parser
       #
-      #@param banner      [String] Banner text
+      # @param banner      [String] Banner text
       #
-      #@return [OptionParser]
+      # @return [OptionParser]
       def create_option_parser(banner)
         OptionParser.new do |o|
           o.banner = banner
@@ -120,19 +120,19 @@ module Impressbox
 
       # Renders option description
       #
-      #@param data   [Hash]   Sullied data
+      # @param data   [Hash]   Sullied data
       #
-      #@return [String]
+      # @return [String]
       def option_description(data)
         I18n.t data[:description], @default_values
       end
 
       # Renders options from data
       #
-      #@param data   [Hash]   Sullied data
-      #@param option [String] Option name
+      # @param data   [Hash]   Sullied data
+      # @param option [String] Option name
       #
-      #@return [Array]
+      # @return [Array]
       def option_data_parse(data, option)
         [
           option_short(data),
@@ -143,7 +143,7 @@ module Impressbox
 
       # Returns default values hash
       #
-      #@return [Hash]
+      # @return [Hash]
       def read_default_values
         require 'yaml'
         file = ConfigData.real_path('default.yml')
@@ -157,10 +157,10 @@ module Impressbox
 
       # Renders full option data
       #
-      #@param option [String] Option name
-      #@param data   [Hash]   Sullied data
+      # @param option [String] Option name
+      # @param data   [Hash]   Sullied data
       #
-      #@return [String]
+      # @return [String]
       def option_full(option, data)
         return data[:full] if data.key?(:full)
         d = option.downcase
@@ -170,16 +170,16 @@ module Impressbox
 
       # Renders short option
       #
-      #@param data   [Hash]   Sullied data
+      # @param data   [Hash]   Sullied data
       #
-      #@return [String]
+      # @return [String]
       def option_short(data)
         data[:short]
       end
 
       # Returns list of posssible templates
       #
-      #@return [Array]
+      # @return [Array]
       def templates
         ConfigData.list_of_type 'templates'
       end

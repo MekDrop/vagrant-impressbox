@@ -12,8 +12,8 @@ module Impressbox
 
       # Initialize middleware
       #
-      #@param machine [Vagrant::Machine]        Current machine
-      #@param config [Impressbox::ConfigFile]   Loaded config
+      # @param machine [Vagrant::Machine]        Current machine
+      # @param config [Impressbox::ConfigFile]   Loaded config
       def initialize(machine, config)
         super machine, config
 
@@ -27,7 +27,7 @@ module Impressbox
 
       # Do we need to check for plugins
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def check_plugins?
         !@@checked && (ARGV.include?('up') || ARGV.include?('provision'))
       end
@@ -46,7 +46,7 @@ module Impressbox
 
       # gets current command line
       #
-      #@return [String]
+      # @return [String]
       def current_command_line
         cmd = ''
         if ENV.has_key?('BUNDLE_BIN_PATH')
@@ -57,7 +57,7 @@ module Impressbox
 
       # Makes not installed plugins list
       #
-      #@return [Array]
+      # @return [Array]
       def not_installed_list
         real_plugins_names.select do |plugin_name|
           not Vagrant.has_plugin? plugin_name
@@ -66,7 +66,7 @@ module Impressbox
 
       # Makes real plugin name array
       #
-      #@return [Array]
+      # @return [Array]
       def real_plugins_names
         @config.plugins.map do |plugin_name|
           'vagrant-' + plugin_name
@@ -75,9 +75,9 @@ module Impressbox
 
       # Makes install plugin action info
       #
-      #@param plugin_name [String]  Plugin name
+      # @param plugin_name [String]  Plugin name
       #
-      #@return [Hash]
+      # @return [Hash]
       def plugin_install_action_info(plugin_name)
         {
           plugin_entry_point: nil,

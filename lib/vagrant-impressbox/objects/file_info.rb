@@ -7,12 +7,12 @@ module Impressbox
 
       # Filename
       #
-      #@return [String]
+      # @return [String]
       attr_reader :filename
 
       # Last instance (if there where any)
       #
-      #@return [Object]
+      # @return [Object]
       attr_reader :last_instance
 
       # Base path
@@ -23,49 +23,49 @@ module Impressbox
 
       # Initializer
       #
-      #@param filename [String] Filename
+      # @param filename [String] Filename
       def initialize(filename)
         @filename = filename
       end
 
       # Is Ruby file?
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def ruby_file?
         extension == '.rb'
       end
 
       # Gets relative path
       #
-      #@return [String]
+      # @return [String]
       def relative_path
         @filename.sub BASE_PATH, ''
       end
 
       # Gets short filename
       #
-      #@return [String]
+      # @return [String]
       def short_name
         File.basename @filename
       end
 
       # Gets extension
       #
-      #@return [String]
+      # @return [String]
       def extension
         File.extname @filename
       end
 
       # Gets namespace for file
       #
-      #@return [String]
+      # @return [String]
       def namespace
         namespace_parts.join('::')
       end
 
       # Gets namespace parts array
       #
-      #@return [Array]
+      # @return [Array]
       def namespace_parts
         t_str=StringTools.remove_at_end(relative_path, short_name)
         t_str.split(/[\\]|[\/]/).map do |part|
@@ -77,14 +77,14 @@ module Impressbox
 
       # Gets class name for file
       #
-      #@return [String]
+      # @return [String]
       def class_name
         StringTools.concat_capitalize class_name_parts
       end
 
       # Gets class name for file parts array
       #
-      #@return [Array]
+      # @return [Array]
       def class_name_parts
         parts = File.basename(@filename, extension).split('_')
         parts.delete_at(0) if StringTools.is_numeric(parts[0])
@@ -93,21 +93,21 @@ module Impressbox
 
       # Gets classname with namespace
       #
-      #@return [String]
+      # @return [String]
       def full_class_name
         full_class_name_parts.join '::'
       end
 
       # Gets classname with namespace parts
       #
-      #@return [Array]
+      # @return [Array]
       def full_class_name_parts
         ['Impressbox'] + namespace_parts + [class_name]
       end
 
       # Gets const class name
       #
-      #@return [Object]
+      # @return [Object]
       def const_class_name
         require @filename
         full_class_name_parts.inject(Object) do |o, c|
@@ -117,9 +117,9 @@ module Impressbox
 
       # Gets instance of class
       #
-      #@param args [Array] Args array
+      # @param args [Array] Args array
       #
-      #@return [Object]
+      # @return [Object]
       def instance(*args)
         @last_instance = const_class_name.new(*args)
       end

@@ -10,10 +10,10 @@ module Impressbox
 
       # Creates instance of class found in file
       #
-      #@param namespace [String]  Namespace to use for founding a class
-      #@param f         [String]  Filename
+      # @param namespace [String]  Namespace to use for founding a class
+      # @param f         [String]  Filename
       #
-      #@return [String]
+      # @return [String]
       def self.quick_instance(namespace, f)
         cname = self.render_class_name_from_file(namespace, f)
         self.create_instance_from_class_name cname
@@ -21,10 +21,10 @@ module Impressbox
 
       # Gets class name from filename
       #
-      #@param namespace [String]  Class namespace
-      #@param file      [String]  Filename
+      # @param namespace [String]  Class namespace
+      # @param file      [String]  Filename
       #
-      #@return [String]
+      # @return [String]
       def self.render_class_name_from_file(namespace, file)
         parts = self.split_file_name(file)
         parts.delete_at(0) if self.is_numeric_part(parts[0])
@@ -37,9 +37,9 @@ module Impressbox
 
       # Create instance from class name
       #
-      #@param class_name [String] Class name with namespace to create
+      # @param class_name [String] Class name with namespace to create
       #
-      #@return [Object]
+      # @return [Object]
       def self.create_instance_from_class_name(class_name)
         cname = class_name.split('::').inject(Object) do |o, c|
           o.const_get c
@@ -51,9 +51,9 @@ module Impressbox
 
       # Splits filename by _
       #
-      #@param file [String] Filename to split
+      # @param file [String] Filename to split
       #
-      #@return [Array]
+      # @return [Array]
       def self.split_file_name(file)
         File.basename(file, '.rb').split('_')
       end
@@ -62,9 +62,9 @@ module Impressbox
 
       # is numeric part
       #
-      #@param part [String] part
+      # @param part [String] part
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def self.is_numeric_part(part)
         true if Float(part) rescue false
       end

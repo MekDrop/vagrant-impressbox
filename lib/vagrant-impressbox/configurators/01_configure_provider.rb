@@ -6,7 +6,7 @@ module Impressbox
 
       # Do configuration operations
       #
-      #@param vagrant_config [Hash]  Current Vagrantfile configuration instance
+      # @param vagrant_config [Hash]  Current Vagrantfile configuration instance
       def configure(vagrant_config)
         @machine.ui.info I18n.t('configuring.provider')
         call_method = provider_method_name
@@ -21,23 +21,23 @@ module Impressbox
 
       # Method exists?
       #
-      #@param method_name [String] Method name
+      # @param method_name [String] Method name
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def method_exists?(method_name)
         true if method(method_name) rescue false
       end
 
       # Gets provider method name
       #
-      #@return [String]
+      # @return [String]
       def provider_method_name
         'configure_' + @machine.provider_name.to_s
       end
 
       # Prints configuration is not possible for selected option
       #
-      #@param what [String] Option name
+      # @param what [String] Option name
       def configuration_is_not_possible(what)
         @machine.ui.warn I18n.t('configuring.warning.configuration_is_not_possible.' + what)
       end

@@ -9,18 +9,18 @@ module Impressbox
 
       # Execute command on host and return result
       #
-      #@param value [String] Command to execute
+      # @param value [String] Command to execute
       #
-      #@return [String]
+      # @return [String]
       def host_cmd(value)
         `#{value}`
       end
 
       # Show input field with message
       #
-      #@param value [String] Message for input field
+      # @param value [String] Message for input field
       #
-      #@return [String]
+      # @return [String]
       def input(value)
         print value
         ret = STDIN.gets.chomp
@@ -32,9 +32,9 @@ module Impressbox
 
       # Gets enviroment variable
       #
-      #@param value [String] Enviroment variable name
+      # @param value [String] Enviroment variable name
       #
-      #@return [String]
+      # @return [String]
       def env(value)
         return "" unless ENV.key?(value)
         ENV[value].to_s
@@ -42,9 +42,9 @@ module Impressbox
 
       # Displays input field if no env
       #
-      #@param value [String] Enviroment variable name + input string
+      # @param value [String] Enviroment variable name + input string
       #
-      #@return [String]
+      # @return [String]
       def input_if_no_env(value)
         env_name, text = value.split(':', 2)
         ret = env(env_name)
@@ -53,14 +53,14 @@ module Impressbox
         end
         ret
       end
-      
+
       # Gets host os
       #
-      #@return [String]
+      # @return [String]
       def host_os
         Vagrant::Util::Platform.platform
       end
-      
+
     end
   end
 end

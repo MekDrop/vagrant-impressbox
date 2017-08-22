@@ -9,368 +9,354 @@ module Impressbox
     # Config reader
     class ConfigFile
 
-      # Binds long constant name to short name
-      #
-      # Unset value is used for Vagrant to indetify when value was not set
-      UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE
-
       # Environment vars collection
       #
-      #@!attribute [rw] vars
+      # @!attribute [rw] vars
       #
-      #@return [Hash]
+      # @return [Hash]
       attr_reader :vars
 
       # Samba configuration
       #
-      #@!attribute [rw] smb
+      # @!attribute [rw] smb
       #
-      #@return [Hash]
+      # @return [Hash]
       attr_reader :smb
 
       # SSH keys filenames
       #
-      #@!attribute [rw] keys
+      # @!attribute [rw] keys
       #
-      #@return [Hash]
+      # @return [Hash]
       attr_reader :keys
 
       # Ports bidning between host and guest
       #
-      #@!attribute [rw] ports
+      # @!attribute [rw] ports
       #
-      #@return [Array]
+      # @return [Array]
       attr_reader :ports
 
       # Check box for update?
       #
-      #@!attribute [rw] check_update
+      # @!attribute [rw] check_update
       #
-      #@return [Boolean]
+      # @return [Boolean]
       attr_reader :check_update
 
       # How many CPUs to use for box?
       #
-      #@!attribute [rw] cpus
+      # @!attribute [rw] cpus
       #
-      #@return [Integer]
+      # @return [Integer]
       attr_reader :cpus
 
       # How much memory (in megabytes) to use for virtual box?
       #
-      #@!attribute [rw] memory
+      # @!attribute [rw] memory
       #
-      #@return [Integer]
+      # @return [Integer]
       attr_reader :memory
 
       # Show GUI?
       #
-      #@!attribute [rw] gui
+      # @!attribute [rw] gui
       #
-      #@return [Boolean]
+      # @return [Boolean]
       attr_reader :gui
 
       # Defines shell provision commands
       #
-      #@!attribute [rw] provision
+      # @!attribute [rw] provision
       #
-      #@return [String]
+      # @return [String]
       attr_reader :provision
 
       # Box name
       #
-      #@!attribute [rw] name
+      # @!attribute [rw] name
       #
-      #@return [String]
+      # @return [String]
       attr_reader :name
 
       # Binded IP
       #
-      #@!attribute [rw] ip
+      # @!attribute [rw] ip
       #
-      #@return [Hash]
+      # @return [Hash]
       attr_reader :ip
 
       # Binded hostname(s)
       #
-      #@!attribute [rw] hostname
+      # @!attribute [rw] hostname
       #
-      #@return [String,Array]
+      # @return [String,Array]
       attr_reader :hostname
 
       # Plugins
       #
-      #@!attribute [rw] plugins
+      # @!attribute [rw] plugins
       #
-      #@return [String,Array]
+      # @return [String,Array]
       attr_reader :plugins
+
+      # Box
+      #
+      # @!attribute [rw] box
+      #
+      # @return [String]
+      attr_reader :box
+
+      # Default config
+      #
+      # @return [self]
+      def self.default
+        file = File.join(
+          __dir__,
+          '..',
+          'configs',
+          'default.yml'
+        )
+        self.new file
+      end
 
       # Constructor / Initializer
       def initialize(file)
-        @_default = load_yaml(default_yaml)
-
-        data = load_yaml(file)
-
-        @_default.each do |key, value|
+        load_yaml(file).each do |key, value|
+          puts key
           if self.respond_to?(key + '=')
-            send key + "=", data[key]
+            send key + "=", value
           end
         end
       end
 
       # Sets 'vars' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def vars=(value)
-        @vars = qq_array(value, 'vars')
+        if value.kind_of?(Array)
+          @vars = value
+        elsif value.nil?
+          @vars = []
+        else
+          raise_assign_error 'vars', value
+        end
       end
 
       # Sets 'smb' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def smb=(value)
-        @smb = qq_hash(value, 'smb', ['ip', 'user', 'pass'])
+        if value.kind_of?(Hash)
+          @vars = {
+            :ip => value.key?('ip') ? value[:ip] : nil,
+            :user => value.key?('user') ? value[:user] : nil,
+            :pass => value.key?('pass') ? value[:pass] : nil,
+          }
+        elsif value.nil?
+          @vars = {
+            :ip => nil,
+            :user => nil,
+            :pass => nil,
+          }
+        else
+          raise_assign_error 'smb', value
+        end
       end
 
       # Sets 'keys' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def keys=(value)
-        @keys = qq_hash(value, 'keys', ['private', 'public'])
+        if value.kind_of?(Hash)
+          @keys = {
+            :private => value[:private],
+            :public => value[:public]
+          }
+        elsif value.nil?
+          @vars = {
+            :private => nil,
+            :public => nil,
+          }
+        else
+          raise_assign_error 'keys', value
+        end
       end
 
       # Sets 'ports' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def ports=(value)
         if value.kind_of?(Array)
-          @ports = value.select do |el|
-            return false unless hash_with_keys?(el, ['host', 'guest'])
-            non_zero_int?(el['guest']) && non_zero_int?(el['host'])
-          end
+          @ports = value
+        elsif value.nil?
+          @ports = false
         else
-          @ports = @_default['ports']
+          raise_assign_error 'ports', value
         end
       end
 
       # Sets 'check_update' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def check_update=(value)
-        @check_update = qg_bool(value, 'check_update')
+        if value.kind_of?(Boolean)
+          @check_update= value
+        elsif value.nil?
+          @check_update= false
+        else
+          raise_assign_error 'check_update', value
+        end
       end
 
       # Sets 'cpus' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def cpus=(value)
-        @cpus = qg_int(value, 'cpus')
+        if value.kind_of?(Numeric)
+          @cpus = value.to_int
+        elsif value.nil?
+          @cpus = 1
+        else
+          raise_assign_error 'cpus', value
+        end
       end
 
       # Sets 'memory' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def memory=(value)
-        @memory = qg_int(value, 'memory')
+        if value.kind_of?(Numeric)
+          @memory = value.to_int
+        elsif value.nil?
+          @memory = 1024
+        else
+          raise_assign_error 'memory', value
+        end
       end
 
       # Sets 'gui' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def gui=(value)
-        @gui = qg_bool(value, 'gui')
+        if value.kind_of?(Boolean)
+          @gui= value
+        elsif value.nil?
+          @gui= false
+        else
+          raise_assign_error 'gui', value
+        end
       end
 
       # Sets 'provision' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def provision=(value)
-        @provision = qg_str_or_nil(value, 'provision')
+        if value.kind_of?(String)
+          @provision = value
+        elsif value.nil?
+          @provision= ''
+        else
+          raise_assign_error 'provision', value
+        end
       end
 
       # Sets 'name' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def name=(value)
-        @name = qg_str_not_empty(value, 'name')
+        if value.kind_of?(String)
+          @name = value
+        elsif value.nil?
+          @name= [*('a'..'z'), *('0'..'9')].shuffle[0, 8].join
+        else
+          raise_assign_error 'name', value
+        end
       end
 
       # Sets 'ip' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def ip=(value)
-        @ip = qg_str_or_nil(value, 'ip')
+        if value.kind_of?(String)
+          @ip = value
+        elsif value.nil?
+          @ip= nil
+        else
+          raise_assign_error 'ip', value
+        end
       end
 
       # Sets 'hostname' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def hostname=(value)
-        @hostname = qg_str_array(value, 'hostname')
+        if value.kind_of?(String)
+          @hostname = value
+        elsif value.nil?
+          @hostname= nil
+        else
+          raise_assign_error 'hostname', value
+        end
       end
 
       # Sets 'plugins' variable
       #
-      #@param value [Object]  Value to set to variable
+      # @param value [Object]  Value to set to variable
       def plugins=(value)
-        @plugins = qg_str_array(value, 'plugins')
+        if value.kind_of?(Array)
+          @plugins = value
+        elsif value.nil?
+          @plugins = []
+        else
+          raise_assign_error 'plugins', value
+        end
+      end
+
+      # Sets 'box' variable
+      #
+      # @param value [Object]  Value to set to variable
+      def box=(value)
+        if value.kind_of?(String)
+          @box = value
+        elsif value.nil?
+          @box= nil
+        else
+          raise_assign_error 'hostname', value
+        end
       end
 
       # Converts config data to Hash
       #
-      #@return [Hash]
+      # @return [Hash]
       def to_hash
-        {
-          "ip" => @ip,
-          "vars" => @vars,
-          "smb" => @smb,
-          "keys" => @keys,
-          "ports" => @ports,
-          "check_update" => @check_update,
-          "cpus" => @cpus,
-          "memory" => @memory,
-          "gui" => @gui,
-          "provision" => @provision,
-          "name" => @name,
-          "hostname" => @hostname,
-          "plugins" => @plugins
-        }
+        instance_variables
       end
 
       private
 
-      # Default values data (used when assigning variable)
-      #
-      #@!attribute [r] _default
-      #@return [Hash]
-      attr_reader :_default
-
       # Load Yaml file and returns contents
       #
-      #@param file [String] File to load
+      # @param file [String] File to load
       #
-      #@return [Object]
+      # @return [Object]
       def load_yaml(file)
+        @file = file
         YAML.load File.open(file)
       end
 
-      # Gets default config file
+      # Raises assign var error
       #
-      #@return [String]
-      def default_yaml
-        File.join __dir__, '..', 'configs', 'default.yml'
-      end
-
-      # Test if hash with specific keys and if not returns one from default values
-      #
-      #@param value             [Object]  Value to test
-      #@param default_value_key [String]  Key for default values hash
-      #@param keys              [Array]   Keys list to check
-      #
-      #@return [Hash]
-      def qq_hash(value, default_value_key, keys)
-        if hash_with_keys?(value, keys)
-          return value
-        end
-        @_default[default_value_key]
-      end
-
-      # Test if array and if not returns one from default values
-      #
-      #@param value             [Object]  Value to test
-      #@param default_value_key [String]  Key for default values hash
-      #
-      #@return [Array]
-      def qq_array(value, default_value_key)
-        return value if value.is_a?(Array)
-        @_default[default_value_key]
-      end
-
-      # Test if integer and if not returns one from default values
-      #
-      #@param value             [Object]  Value to test
-      #@param default_value_key [String]  Key for default values hash
-      #
-      #@return [Integer]
-      def qg_int(value, default_value_key)
-        return value if value.is_a?(Integer)
-        return value.to_i if non_zero_int?(value)
-        @_default[default_value_key]
-      end
-
-      # Test if boolean and if not returns one from default values
-      #
-      #@param value             [Object]  Value to test
-      #@param default_value_key [String]  Key for default values hash
-      #
-      #@return [Boolean]
-      def qg_bool(value, default_value_key)
-        return value if (!!value) == value
-        return @_default[default_value_key] unless value.kind_of?(String)
-        case value.downcase
-          when 'false', '0', 'no', '-', 'f', 'n', 'off'
-            return false
-          when 'true', '1', 'yes', '+', 't', 'y', 'on'
-            return true
-        end
-        @_default[default_value_key]
-      end
-
-      # Test if string and not empty and if not returns one from default values
-      #
-      #@param value             [Object]  Value to test
-      #@param default_value_key [String]  Key for default values hash
-      #
-      #@return [String]
-      def qg_str_not_empty(value, default_value_key)
-        return if value.kind_of?(String) && !value.empty?
-        @_default[default_value_key]
-      end
-
-      # Test if string or nil and if not returns one from default values
-      #
-      #@param value             [Object]  Value to test
-      #@param default_value_key [String]  Key for default values hash
-      #
-      #@return [String,nil]
-      def qg_str_or_nil(value, default_value_key)
-        return value if value.nil? or value.kind_of?(String)
-        @_default[default_value_key]
-      end
-
-      # Test if array or string and if not returns one from default values
-      #
-      #@param value             [Object]  Value to test
-      #@param default_value_key [String]  Key for default values hash
-      #
-      #@return [Array,String]
-      def qg_str_array(value, default_value_key)
-        return [value] if value.kind_of?(String)
-        return value if value.kind_of?(Array)
-        @_default[default_value_key]
-      end
-
-      # Is Hash with specific keys ?
-      #
-      #@param value [Object]  Object to test
-      #@param keys  [Array]   Keys list
-      #
-      #@return [Boolean]
-      def hash_with_keys?(value, keys)
-        return false unless value.kind_of?(Hash)
-        keys.each do |key|
-          return false unless value.key?(key)
-        end
-        true
-      end
-
-      # Is non zero integer ?
-      #
-      #@param value [Object]  value to test
-      #
-      #@return [Boolean]
-      def non_zero_int?(value)
-        value.to_s.to_i == value.to_i
+      # @param var [String] Var name
+      # @param value [Object] Value
+      def raise_assign_error(var, value)
+        params = {
+          var: var,
+          file: @file,
+          value: value.inspect,
+          type: value.class
+        }
+        raise I18n.t('template.error.bad_value_specified', params)
       end
 
     end

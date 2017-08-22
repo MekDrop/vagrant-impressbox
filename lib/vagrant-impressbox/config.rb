@@ -24,9 +24,9 @@ module Impressbox
 
     # Validate config values
     #
-    #@param machine [::Vagrant::Machine] machine for what to validate config data
+    # @param machine [::Vagrant::Machine] machine for what to validate config data
     #
-    #@return [Hash]
+    # @return [Hash]
     def validate(machine)
       errors = []
 
@@ -41,7 +41,7 @@ module Impressbox
 
     # Does yaml file exists?
     #
-    #@return [Boolean]
+    # @return [Boolean]
     def good_file?
       File.exist? @file
     end

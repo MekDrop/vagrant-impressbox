@@ -6,7 +6,7 @@ module Impressbox
 
       # Do configuration operations
       #
-      #@param vagrant_config [Hash]  Current Vagrantfile configuration instance
+      # @param vagrant_config [Hash]  Current Vagrantfile configuration instance
       def configure(vagrant_config)
         @machine.ui.info I18n.t('configuring.ssh')
         vagrant_config.ssh.pty = false

@@ -5,8 +5,8 @@ module Impressbox
 
       # Initialize middleware
       #
-      #@param machine [Vagrant::Machine]        Current machine
-      #@param config [Impressbox::ConfigFile]   Loaded config
+      # @param machine [Vagrant::Machine]        Current machine
+      # @param config [Impressbox::ConfigFile]   Loaded config
       def initialize(machine, config)
         @machine = machine
         @config = config
@@ -19,7 +19,7 @@ module Impressbox
 
       # Do configuration operations
       #
-      #@param root_config [Hash]  Current Vagrantfile configuration instance
+      # @param root_config [Hash]  Current Vagrantfile configuration instance
       def configure(root_config)
 
       end

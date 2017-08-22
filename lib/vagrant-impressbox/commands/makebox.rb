@@ -4,59 +4,64 @@ module Impressbox
     # Command class
     class Makebox < Impressbox::Abstract::Command
 
-      # Config.yaml file
-      #
-      #@return [String]
-      attr_reader :file
-
-      # Config.yaml data path
-      #
-      #@return [String]
-      attr_reader :cwd
-
-      # Parsed arguments
-      #
-      #@return [::Impressbox::Objects::CommandOptionsParser]
-      attr_reader :args
-
-      # Creates ConfigData shortcut
-      ConfigData = Impressbox::Objects::ConfigData
+      # Creates ConfigFile shortcut
+      ConfigFile = Impressbox::Objects::ConfigFile
 
       # Creates Template shortcut
       Template = Impressbox::Objects::Template
 
-      # Creates CommandOptionsParser shortcut
-      CommandOptionsParser = Impressbox::Objects::CommandOptionsParser
+      # Sets default values for instance vars
+      def set_defaults_args
+        config = ConfigFile.default
+
+        @box = config.box
+        @ip = config.ip
+        @hostname = config.hostname
+        @memory = config.memory
+        @cpus = config.cpus
+      end
 
       # Initializer
       #
-      #@param argv  [Objects] Arguments
-      #@param env   [Env]     Enviroment
+      # @param argv  [Objects] Arguments
+      # @param env   [Env]     Enviroment
       def initialize(argv, env)
         return if env.nil?
+
         super argv, env
-        @file = selected_yaml_file
+
+        @box = "ImpressCMS/DevBox-Ubuntu"
+
         @cwd = env.cwd.to_s
         @template = Template.new
-        @args = CommandOptionsParser.new(
-          banner,
-          method(:parse_options)
-        )
       end
 
-      # Gets command description
+      # If box option is suplied...
       #
-      #@return [String]
-      def self.synopsis
-        I18n.t 'command.impressbox.synopsis'
+      # @param box [String] Supplied value
+      def on_box(box)
+        @box = box
+      end
+
+      # If ip option is suplied...
+      #
+      # @param ip [String] Supplied value
+      def _on_ip(ip)
+        @ip = ip
+      end
+
+      # If hostname option is suplied...
+      #
+      # @param hostname [String] Supplied value
+      def on_hostname(hostname)
+        @hostname = hostname
       end
 
       # Execute command
       #
-      #@return [Integer]
-      def execute
-        c_args = @args.parse
-        unless c_args.nil?
+      # @return [Integer]
+      def execute2
+        unless @args.nil?
           write_result_msg do_prepare
         end
         0
@@ -66,7 +71,7 @@ module Impressbox
 
       # Gets yaml file from current vagrantfile
       #
-      #@return [String]
+      # @return [String]
       def selected_yaml_file
         p = current_impressbox_provisioner
         if p.nil? || p.config.nil? || p.config.file.nil? ||
@@ -78,7 +83,7 @@ module Impressbox
 
       # Gets current provisioner with impressbox type
       #
-      #@return [::VagrantPlugins::Kernel_V2::VagrantConfigProvisioner,nil]
+      # @return [::VagrantPlugins::Kernel_V2::VagrantConfigProvisioner,nil]
       def current_impressbox_provisioner
         @env.vagrantfile.config.vm.provisioners.each do |provisioner|
           next unless provisioner.type == :impressbox
@@ -89,7 +94,7 @@ module Impressbox
 
       # Prepares options array
       #
-      #@param options [Hash]  Current options
+      # @param options [Hash]  Current options
       def update_latest_options(options)
         options[:info] = {
           last_update: Time.now.to_s,
@@ -101,7 +106,7 @@ module Impressbox
 
       # Updates name param in options hash
       #
-      #@param options [Hash]  Input/output hash
+      # @param options [Hash]  Input/output hash
       def update_name(options)
         if options.key?(:name) && options[:name].is_a?(String) && options[:name].length > 0
           return
@@ -117,7 +122,7 @@ module Impressbox
 
       # Writes message for action result
       #
-      #@param result [Boolean]
+      # @param result [Boolean]
       def write_result_msg(result)
         msg = if result then
                 I18n.t 'config.recreated'
@@ -136,8 +141,8 @@ module Impressbox
 
       # Renders and safes file
       #
-      #@param local_file [String] Local filename
-      #@param tpl_file  [String] Template filename
+      # @param local_file [String] Local filename
+      # @param tpl_file  [String] Template filename
       def quick_make_file(local_file, tpl_file)
         current_file = local_file(local_file)
         template_file = @template.real_path(tpl_file)
@@ -152,9 +157,9 @@ module Impressbox
 
       # Makes data files array
       #
-      #@param current_file [String] Current file name
+      # @param current_file [String] Current file name
       #
-      #@return [Array]
+      # @return [Array]
       def make_data_files_array(current_file)
         data_files = [
           ConfigData.real_path('default.yml')
@@ -170,16 +175,16 @@ module Impressbox
 
       # Gets local file name with path
       #
-      #@param file [String] File to append path
+      # @param file [String] File to append path
       #
-      #@return [String]
+      # @return [String]
       def local_file(file)
         File.join @cwd, file
       end
 
       # Returns template filename if specific template was specified (not default)
       #
-      #@return [String,nil]
+      # @return [String,nil]
       def use_template_filename
         return nil unless @args[:___use_template___]
         ConfigData.real_type_filename 'templates', @args[:___use_template___]
@@ -187,16 +192,9 @@ module Impressbox
 
       # Must recreate config files ?
       #
-      #@return [Boolean]
+      # @return [Boolean]
       def must_recreate
         @args[:___recreate___]
-      end
-
-      # Returns command banner (aka Usage)
-      #
-      #@return [String]
-      def banner
-        I18n.t 'command.impressbox.usage', cmd: 'vagrant impressbox'
       end
 
     end
