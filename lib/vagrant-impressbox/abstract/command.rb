@@ -36,6 +36,12 @@ module Impressbox
       def set_defaults_args;
       end
 
+      # Gets footer
+      #
+      # @return [String]
+      def footer;
+      end
+
       # Gets banner
       #
       # @return [String]
@@ -59,7 +65,9 @@ module Impressbox
         OptionParser.new do |o|
           o.banner = banner
           o.separator ''
+          o.separator I18n.t('command.default.possible_options')
           map_args_to_option_parser! o
+          o.separator footer if footer
         end
       end
 

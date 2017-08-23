@@ -112,9 +112,8 @@ module Impressbox
       # @return [self]
       def self.default
         file = File.join(
-          __dir__,
-          '..',
-          'configs',
+          Impressbox.source_root,
+          'data',
           'default.yml'
         )
         self.new file

@@ -151,7 +151,7 @@ module Impressbox
         YAML.load(File.open(file)).each do |k, v|
           ret[k.to_sym] = v
         end
-        ret[:templates] = templates.join(', ')
+        ret[:predefined] = templates.join(', ')
         ret
       end
 

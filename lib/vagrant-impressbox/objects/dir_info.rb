@@ -22,7 +22,16 @@ module Impressbox
       def self.create_from_relative_path(path, only_rb = false)
         fpath = File.join('..', path)
         dir = File.expand_path(fpath, __dir__)
-        self.new dir
+        self.new dir, only_rb
+      end
+
+      # Create from source path
+      #
+      # @param path [String]     Path
+      #
+      # @return [DirInfo]
+      def self.create_from_source_path(path)
+        self.new File.expand_path(path, Impressbox.source_root)
       end
 
       # Initializer

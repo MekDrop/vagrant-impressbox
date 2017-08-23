@@ -44,6 +44,8 @@ en:
         not_exist: "Config file %{file} not exist"
         loaded_from_file: "Loaded config from %{file}"
     command:
+        default:
+          possible_options: "Possible options:"
         makebox:
             synopsis: Creates a Vagrantfile and config.yaml ready for use with ImpressBox
             usage: "Usage: %{cmd} [options]"
@@ -55,6 +57,5 @@ en:
                 hostname: "Hostname associated with this box (default: %{default_value})"
                 memory:  "How much RAM (in megabytes)? (default: %{default_value})"
                 cpus: "How much CPU? (default: %{default_value})"
-                special:
-                    recreate: "Recreates config instead of updating (so you don't need to delete first)"
-                    use_template: "This argument says that predefined config will be used when creating box. Possible names: %{templates}"
+                recreate: "Recreates config instead of updating (so you don't need to delete first)"
+                template: "This argument says that predefined config will be used when creating box. Possible names: %{templates}"

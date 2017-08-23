@@ -9,7 +9,7 @@ module Impressbox
     # Provision shortcut
     Provision = Vagrant::Action::Builtin::Provision
 
-    # Mass Loader shortcut
+    # DirInfo shortcut
     DirInfo = Impressbox::Objects::DirInfo
 
     # Defines plug-in name
